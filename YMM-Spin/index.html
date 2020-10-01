@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://codepen.io/garethfoote/pen/jrQqVW.js"></script>
+  <script type="text/javascript" src="clone.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.10.0/matter.js"></script>
+
+  <script>
+  window.onload = function(){
+
+    var mousePos;
+    var hasMoved = false;
+    document.addEventListener("mousemove", () => {
+      let mousex = event.clientX; // Gets Mouse X
+      let mousey = event.clientY; // Gets Mouse Y
+      hasMoved = true;
+      mousePos={x:mousex, y:mousey}; // Prints data
+    });
+
+
+
+    var url = 'https://raw.githubusercontent.com/progers/pathseg/master/pathseg.js';
+    loadGitHubScript(url).then(function () {
+
+      // module aliases
+      var Engine = Matter.Engine,
+      Events = Matter.Events,
+      Render = Matter.Render,
+      World = Matter.World,
+      Runner = Matter.Runner,
+      Bodies = Matter.Bodies,
+      Body = Matter.Body,
+      Composites = Matter.Composites,
+      Composite = Matter.Composite,
+      Common = Matter.Common,
+      Svg = Matter.Svg,
+      Vertices = Matter.Vertices;
+      Mouse = Matter.Mouse;
+      MouseConstraint = Matter.MouseConstraint;
+
+
+
+
+      //global vars
+      var centerX = window.innerWidth/2,
+      centerY = window.innerHeight/2;
+
+      // create an engine
+      var engine = Engine.create();
+
+      // create a renderer for the whole scene
+      var render = Render.create({
+        element: document.body,
+        engine: engine,
+        options:{
+          width:window.innerWidth,
+          height:window.innerHeight,
+          wireframes:false,
+          background: "white"
+        }
+      });
+      //maintain aspect ratio
+      Render.setPixelRatio(render, "auto");
+
+      // set lighter gravity
+      engine.world.gravity.y = .02;
+      engine.world.gravity.scale = .001;
+
+      var letters = [];
+      var wheel;
+
+
+
+
+      //Create svg letters
+      $('#svg').find('path').each(function(i, path){
+        var b = Bodies.fromVertices(100+(i*80), 80, Svg.pathToVertices(path, 20), {
+          render: {
+            fillStyle: 'white',
+            strokeStyle: 'white',
+            lineWidth: 1
+          },
+          friction:.9,
+          frictionAir: 0.1,
+          frictionStatic: 0.1,
+          collisionFilter:{
+            category:0x0001,
+            mask:0x0001
+          },
+          restitution:1
+        }, true);
+        if(i<3){
+          letters.push(b);
+        }else{
+          wheel = b;
+          wheel.render.visible = false;
+        }
+      });
+
+
+      //set positions
+      letters.forEach((item, i) => {
+        Body.setPosition(item, { x: centerX, y: centerY });
+        Body.scale(item, 2, 2);
+      });
+      Body.setPosition(wheel, { x: centerX, y: centerY });
+      Body.scale(wheel, .5, .5);
+
+      //create background
+      var circle = Bodies.circle(centerX,centerY,125,{
+        render:{
+          fillStyle: '#4C3BE7',
+          strokeStyle: '#4C3BE7',
+          lineWidth: 0,
+        },
+        isStatic: true,
+        collisionFilter:{
+          category:0x0002,
+          mask:0x0001
+        }
+      });
+
+      //Make A composite of the circle, and the Letters.
+      var ymmBall = Composite.create();
+      Composite.add(ymmBall, circle);
+      Composite.add(ymmBall, letters);
+      Composite.add(ymmBall, wheel);
+
+
+      var clones = [];
+      var gapSize = 40;
+      var rowLength = Math.ceil(window.innerWidth/(250+gapSize));
+      var colHeight = Math.ceil(window.innerHeight/(250));
+
+      console.log(colHeight, rowLength);
+
+      var logoY = 0;
+        if(colHeight%2==0){
+          logoY = colHeight/2;
+        }else{
+          logoY = (colHeight+1)/2-1;
+        }
+        var logoX = 0;
+          if(colHeight%2==0){
+            logoX = colHeight/2;
+          }else{
+            logoX = (colHeight+1)/2-1;
+          }
+
+      for(var iy = 0; iy<colHeight; iy++){
+        for(var ix = 0; ix<rowLength; ix++){
+
+          let newSpinner = clone(ymmBall);
+          newSpinner.id = Common.nextId();
+
+          newSpinner["w"] = newSpinner.bodies[4];
+          newSpinner.w.isStatic = true;
+
+          newSpinner["logo"]=false;
+          newSpinner["touched"] = false;
+          newSpinner["circle"] = newSpinner.bodies[0];
+          newSpinner["Y"] = newSpinner.bodies[1];
+          newSpinner["M1"] = newSpinner.bodies[2];
+          newSpinner["M2"] = newSpinner.bodies[3];
+          newSpinner["letters"] = [];
+          newSpinner.letters.push(newSpinner.bodies[1],newSpinner.bodies[2],newSpinner.bodies[3]);
+
+          //place each clone iteratively
+          newSpinner.bodies.forEach(function(item){
+            //alternate rows
+            if(iy % 2 == 0){
+              newSpinner["xPos"] = (250+gapSize)*ix;
+            }else{
+              newSpinner["xPos"] = (250+gapSize)/2+(250+gapSize)*ix;
+            }
+            newSpinner["yPos"] = (250+gapSize)*iy;
+            Body.setPosition(item, { x: newSpinner.xPos, y: newSpinner.yPos });
+
+//if it is the middle item of the middle row, make Logo
+
+
+            if(iy==logoY&&ix==logoX&&item==newSpinner.circle){
+              newSpinner.logo=true;
+
+//positioning the black logo letters
+              newSpinner.Y.position.x += 65;
+              newSpinner.Y.position.y += 3;
+              newSpinner.M2.position.x -= 70;
+              //newSpinner.M2.position.y += 3;
+              console.log(newSpinner.Y);
+
+              newSpinner.letters.forEach((letter)=>{
+                letter.isStatic = true;
+                letter.position.x+=8;
+              });
+
+
+              console.log(newSpinner.circle.render.fillStyle);
+              newSpinner.circle.render.fillStyle="#000";
+              console.log(newSpinner.circle.render.fillStyle);
+            }
+
+
+
+            item.id = Common.nextId();
+            World.add(engine.world, item);
+
+          });
+          //World.add(engine.world, a);
+          clones.push(newSpinner);
+        }
+      }
+
+
+      //
+      // World.add(engine.world, ymmBall);
+      // World.add(engine.world, circle);
+      // World.add(engine.world, letters);
+      // World.add(engine.world, wheel);
+      //---------------------------
+
+      //make an array of all the composites, to rotate all of them at different speeds.
+
+      //--------------------------------------
+      // run the engine
+      Engine.run(engine);
+
+      // run the renderer
+      Render.run(render);
+
+
+      var maxSpeed = 0.2; //rotation
+      var maxVel = 5;
+      //event loop
+      Events.on(engine, 'beforeUpdate', function(event) {
+
+          clones.forEach((item)=>{
+          if(hasMoved==true){
+            var dx = mousePos.x - item.xPos,
+            dy = mousePos.y - item.yPos,
+            dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 125){
+              if(item.touched==false) {
+                item.touched = true;
+                item.letters.forEach((letter)=>{
+                  Body.applyForce(letter, {x: item.xPos, y: item.yPos},{x: .01, y: .01});
+                });
+
+              }
+            }else{
+              item.touched=false;
+            }
+          }
+          //Composite.rotate(item, -.02, {x: item.xPos, y: item.yPos});
+          Body.setStatic(item.w, true);
+
+
+            ////clamp
+            item.letters.forEach((letter)=>{
+              if(letter.angularSpeed>maxSpeed){
+                var val = 1;
+                if(letter.AngularVelocity<0){
+                  val = -1;
+                }
+                Body.setAngularVelocity(letter, val*maxSpeed);
+              }
+              if(letter.speed>maxVel){
+                //console.log(letter.speed);
+                // if(letter.AngularVelocity<0){
+                //   val = -1;
+                // }
+
+              }
+
+
+
+            });
+              ////clamp
+              if(item.logo==true){
+                Composite.rotate(item, .003, {x: item.xPos, y: item.yPos});
+              }else{
+                Composite.rotate(item, .005, {x: item.xPos, y: item.yPos});
+              }
+
+        });
+
+        //Composite.rotate(ymmBall, -.03, {x: centerX, y: centerY});
+        //Body.setStatic(wheel, true);
+
+      });
+    });
+
+  };
+
+
+
+  </script>
+  <title>YOYO SPIN</title>
+</head>
+
+<body>
+  <svg id="ySVG">
+  </svg>
+  <svg id="svg" style="position:absolute; width: 0; height: 0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" xml:space="preserve">
+    <path d="M29.0781 0L18.2344 15.2344V22.8438H10.8438V15.2344L0 0H8.73438L14.5469 8.95312L20.3438 0H29.0781Z" fill="white"/>
+    <path d="M32.4531 0V22.8438H25.0938V6.9375H24.9062L19.0156 22.8438H13.1875L7.20312 6.6875H7.01562V22.8438H0V0H11.6562L16.0469 13.3438H16.2344L20.5469 0H32.4531Z" fill="white"/>
+    <path d="M32.4531 0V22.8438H25.0938V6.9375H24.9062L19.0156 22.8438H13.1875L7.20312 6.6875H7.01562V22.8438H0V0H11.6562L16.0469 13.3438H16.2344L20.5469 0H32.4531Z" fill="white"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M259.5 0L339.689 12.7009L412.031 49.5601L469.439 106.97L506.299 179.31L519 259.5L506.299 339.69L496.771 358.39L488.9 354.258L497.74 336.909L510 259.5L497.74 182.091L462.158 112.26L406.74 56.8413L336.908 21.2603L259.5 9L182.092 21.2603L112.26 56.8413L56.8418 112.26L21.2598 182.091L9 259.5L21.2598 336.909L56.8418 406.74L112.26 462.159L182.092 497.74L259.5 510L336.908 497.74L406.74 462.159L462.158 406.74L488.446 355.149L496.317 359.281L469.439 412.03L412.031 469.44L339.689 506.299L259.5 519L179.311 506.299L106.969 469.44L49.5605 412.03L12.7012 339.69L0 259.5L12.7012 179.31L49.5605 106.97L106.969 49.5601L179.311 12.7009L259.5 0Z" fill="#C4C4C4"/>
+
+  </svg>
+
+
+</body>
+</body>
+</html>
