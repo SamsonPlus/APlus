@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
+  <style>
+
+  body {
+      background-color: black;
+      padding:0;
+      margin:0;
+    }
+
+  H1{
+    font-size:48px;
+    text-align: center;
+  }
+  H2{
+    text-align:center;
+    margin: 10px 0px;
+  }
+
+  .bg-image{
+    width:100%;
+    position: absolute;
+    top:0;
+    z-index: -1;
+  }
+    .email-card-container {
+        display: block;
+        background-color: white;
+        width: 800px;
+        border-radius: 80px;
+        margin:37vw auto;
+        padding-top:40px;
+        padding-bottom:56px;
+        max-width: 100vw;
+    }
+    .email-body-container{
+      width: 70%;
+      margin: 15px auto;
+    }
+
+.yo-logo{
+  width:72px;
+  height:72px;
+  display: block;
+  margin:auto;
+}
+.yo-text{
+  display: block;
+  margin:18px auto;
+  width:48px;
+}
+
+    .divider{
+      width: 100%;
+      height: 0;
+      margin:45px 0px;
+      border-bottom: 1px #d0d0d0 solid;
+}
+
+
+    li p {
+    display: inline-block;
+    }
+    .app-store-buttons{
+      display:block;
+      margin-bottom:40px;
+
+      display: flex;
+      justify-content: center;
+
+    }
+    .app-button{
+      display:inline-block;
+      background:black;
+      margin:0px 10px;
+      border-radius:10px;
+    }
+    .app-button img{
+      height:40px;
+    }
+    .app-button a{
+      display:block;
+      height:40px;
+    }
+
+    .email-link{
+      color:#00AC3B;
+      display: block;
+      padding-bottom: 48px;
+    }
+    .social-links{
+    background-color: white;
+    display:flex;
+    justify-content:center;
+    margin-bottom: 50px;
+    }
+
+    .social-links a{
+    width: 16px;
+    height: 16px;
+    /* background-color: black; */
+    margin:0px 12px;
+    }
+    .social-links img{
+    width: 16px;
+    height: 16px;
+    }
+
+    .footer p{
+      font-size: 12px;
+      text-align:center;
+      color: #80809E;
+    }
+    p{
+      margin:0;
+      font-size:16px;
+      line-height:20px;
+    }
+    li{
+      display: block;
+      position:relative;
+    }
+    li p:last-child{
+      position:absolute;
+      right:0;
+
+    }
+    ul{
+      padding:0;
+      margin:0;
+    }
+    *{
+      font-family: Roboto, sans-serif;
+    }
+@media only screen and (max-device-width: 600px) {
+
+  H1{
+    font-size:24px;
+    width: 90%;
+    margin:auto;
+    text-align: center;
+  }
+  H2{
+    font-size:24px;
+  }
+    .email-card-container {
+      width:95vw;
+      padding-bottom:20px;
+      border-radius: 40px;
+    }
+    .email-body-container{
+      width:auto;
+      margin:15px 5%;
+      margin-top:35px;
+
+    }
+.divider{
+  margin: 25px auto;
+}
+
+.yo-text{
+  margin-bottom:50px;
+}
+.footer p{
+  line-height: 14px;
+}
+
+}
+
+</style>
+</head>
+<body>
+  <img class="bg-image" src="bg.png" alt="">
+  <div class="email-card-container">
+    <img class="yo-logo" src="yo-logo.png" alt="">
+    <img class="yo-text" src="yo-text.png" alt="YO">
+    <h1>Tu YO SIM está&nbsp;en&nbsp;camino, <!-- FirstName -->Samson<!-- FirstName -->. ¡Gracias!&nbsp;🙏</h1>
+    <div class="email-body-container">
+    <div class="receipt-table">
+      <p>Ordenaste:</p>
+      <ul class="items">
+        <li><p><!-- item 1 -->1x SIM card<!-- item 1 --></p><p><!-- Price 1-->Incluido<!-- Price 1--></p></li>
+        <li><p><!-- item 2 -->1x Item 2<!-- item 2 --></p><p><!-- Price 2-->$ price 2<!-- Price 2--></p></li>
+        <li><p><!-- item 3 -->1x item 3<!-- item 3 --></p><p><!-- Price 3-->$ price 3<!-- Price 3--></p></li>
+      </ul>
+      <br>
+      <ul class="totals">
+        <li><p>Subtotal</p><p><!-- subtotal value-->$ subtotal <!-- subtotal value--></p></li>
+        <li><p>Recompensas</p><p><!-- reward value-->-$ reward<!-- reward value--></p></li>
+        <li><p><strong>Monto total:</strong></p><p><strong><!-- Total Val-->$135.00<!-- Total Val--></strong></p></li>
+      </ul>
+    </div>
+    <div class="divider"></div>
+    <p>Enviar a:</p>
+    <p><!-- Name -->Samson Klitsner</p>
+    <p><!-- address --> 2517 11th avenue, los Angeles, CA 90018</p>
+    <br>
+    <p><!-- phone Number -->+1 415 555 2502</p>
+    <p><!-- email --> samson@adamplusco.com</p>
+
+    <div class="divider"></div>
+    <p>Si ordenaste una SIM con un paquete mensual antes de las 5PM, recibirás tu orden el mismo día antes de 6 horas. Si ordenaste después de las 5PM, lo recibirás al día siguiente.</p>
+    <br>
+    <p>
+Si ordenaste una SIM con un paquete mensual o diario, lo recibirás al día siguiente.</p>
+    <div class="divider"></div>
+
+    <H2>Rastrea tu orden en la app YO TELCO</H2>
+    <div class="app-store-buttons">
+      <div class="app-button"><a href="https://apps.apple.com/mx/app/id1467963254"><img src="app-store.png" alt="IOS App store"></a></div>
+      <div class="app-button"><a href="https://play.google.com/store/apps/details?id=com.yocore.app"><img src="google-store.png" alt="Google Play"></a></div>
+    </div>
+
+    <p style="text-align:center;">¿Necesitas ayuda?
+    <br /><a class="email-link" href = "mailto:abc@example.com?subject = Feedback&body = Message">soporte@yotelco.com</a></p>
+
+      <div class="social-links" >
+        <a href="https://www.tiktok.com/@yotelco_mx"><img src="tiktok.png"/></a>
+        <a href="https://www.facebook.com/yotelcomx"><img src="fb.png"/></a>
+        <a href="https://www.instagram.com/yotelco_mx/"><img src="ig.png"/></a>
+        <a href="https://twitter.com/yotelco_mx"><img src="twitter.png"/></a>
+      </div>
+
+      <div class="footer">
+        <p>12 E 49th St, Flr 11<br/>New York, NY 10017</p>
+        <br /><br />
+        <p>© 2020 YONDER MEDIA MOBILE, INC. TODOS&nbsp;LOS&nbsp;DERECHOS&nbsp;RESERVADOS.</p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>
